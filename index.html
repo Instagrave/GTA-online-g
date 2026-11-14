@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTA San Andreas Online — Salas</title>
+<style>
+:root{color-scheme:dark;--bg:#10140f;--panel:#1c2419;--line:#394a32;--green:#9ad34b;--muted:#b6c2ad}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#10140f,#1d2a18);font-family:Arial,sans-serif;color:#f4f7f0;min-height:100vh}
+main{max-width:760px;margin:auto;padding:22px 14px 40px}.brand{text-align:center;margin:8px 0 22px}.brand small{color:var(--green);letter-spacing:3px;font-weight:bold}.brand h1{font-size:clamp(25px,6vw,42px);margin:8px 0}.brand p{color:var(--muted);margin:0}
+.card{background:rgba(28,36,25,.96);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 12px 35px #0005}
+h2{font-size:19px;margin:0 0 14px}label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}
+input{width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#10170e;color:white;font-size:16px;outline:none}
+input:focus{border-color:var(--green)}button{border:0;border-radius:10px;padding:13px 16px;background:var(--green);color:#14200c;font-weight:bold;font-size:15px;cursor:pointer}
+button.secondary{background:#303d2a;color:#eff8e8;border:1px solid #506346}button:disabled{opacity:.5;cursor:not-allowed}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.actions button{flex:1}
+.note{font-size:12px;line-height:1.5;color:var(--muted)}.hidden{display:none!important}
+.status{padding:10px 12px;border-radius:9px;background:#11190f;color:var(--muted);font-size:13px;margin-top:12px}
+.roomhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.code{font-size:25px;letter-spacing:4px;color:var(--green);font-weight:bold}
+.players{display:flex;gap:8px;flex-wrap:wrap}.player{background:#2b3925;border:1px solid #455a3b;padding:8px 11px;border-radius:30px;font-size:13px}
+.chatlog{height:240px;overflow:auto;background:#10170e;border:1px solid var(--line);border-radius:10px;padding:10px;margin:12px 0}
+.msg{margin:0 0 10px;line-height:1.4;overflow-wrap:anywhere}.msg b{color:var(--green)}.msg time{color:#829079;font-size:11px;margin-left:6px}.system{color:#a9b99e;font-style:italic;font-size:13px}
+.chatform{display:flex;gap:8px}.chatform input{min-width:0}.chatform button{white-space:nowrap}
+footer{text-align:center;color:#829079;font-size:12px;margin-top:20px}
+
+.map-wrap{position:relative;width:100%;max-height:620px;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:#10170e}
+.map-wrap img{display:block;width:100%;max-height:620px;object-fit:contain;cursor:crosshair}
+.map-pin{position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);padding:5px 8px;background:#111;color:white;border:2px solid #fff;border-radius:50%;font-size:20px;display:none;box-shadow:0 2px 10px #000}
+.places{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.place{padding:0;overflow:hidden;text-align:left;background:#10170e;color:white;border:1px solid var(--line);border-radius:10px}
+.place img{display:block;width:100%;height:115px;object-fit:cover}
+.place span{display:block;padding:10px;font-weight:bold}
+
+
+.mission-panel{margin:18px 0;padding:16px;border:1px solid #536d40;border-radius:13px;background:linear-gradient(135deg,#26391f,#11190f)}
+.mission-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.mission-kicker{font-size:11px;letter-spacing:2px;color:#b8e77b;font-weight:bold}
+.mission-panel h2{margin:5px 0 8px}.mission-panel p{color:#d4dfcc;line-height:1.45}
+.mission-state{font-size:11px;color:#d9f7b5;border:1px solid #779c52;border-radius:20px;padding:6px 9px}
+.mission-actions{display:flex;gap:9px;flex-wrap:wrap}.mission-actions button{flex:1}
+.house-step{display:flex;align-items:center;gap:10px;padding:12px;margin-top:12px;border-radius:10px;background:#10170e;border:1px solid #465b39;flex-wrap:wrap}
+.house-step div{flex:1;min-width:140px}.house-step small{display:block;color:#aebda4;margin-top:3px}
+.red-dot{width:15px;height:15px;border-radius:50%;background:#ff3030;box-shadow:0 0 0 5px #ff303033}
+.pulse{animation:pulse 1s infinite alternate}
+@keyframes pulse{to{box-shadow:0 0 0 10px #ff303022}}
+.mission-done{margin-top:14px;padding:14px;border-radius:10px;background:#183d20;color:#baff9a;font-weight:bold;text-align:center;border:1px solid #4e9b43}
+.map-house-marker{position:absolute;left:76%;top:68%;transform:translate(-50%,-50%);display:none;border:3px solid white;border-radius:50%;width:24px;height:24px;background:#ff2525;box-shadow:0 0 0 7px #ff252544,0 0 20px #f00}
+.map-dest-label{position:absolute;left:76%;top:68%;transform:translate(15px,-50%);display:none;padding:5px 8px;background:#161616eF;color:white;border:1px solid #ff5555;border-radius:6px;font-size:12px;white-space:nowrap}
+
+
+.blue-dot{width:16px;height:16px;border-radius:50%;background:#19a7ff;box-shadow:0 0 0 6px #19a7ff33,0 0 18px #19a7ff}
+.pulse-blue{animation:bluepulse 1s infinite alternate}
+@keyframes bluepulse{to{box-shadow:0 0 0 11px #19a7ff20,0 0 25px #19a7ff}}
+.save-panel{margin-top:12px;padding:15px;border:1px solid #4776a0;border-radius:11px;background:#102638}
+.save-panel h3{margin:0 0 7px}.save-panel p{color:#c2d9eb}
+.free-roam{margin-top:14px;padding:15px;border:1px solid #4d9146;border-radius:11px;background:#142b18;color:#c6ffb5}
+.free-roam p{color:#d4e7cf}
+.weapon-hud{display:flex;align-items:center;gap:12px;margin-top:12px;padding:10px;background:#0d160e;border:1px solid #42533b;border-radius:10px;max-width:280px}
+.weapon-hud img{width:78px;height:58px;object-fit:contain;background:#000;border-radius:6px}
+.weapon-hud small{display:block;color:#b9c9b1;margin-top:5px}
+
+
+.shop-hub{margin-top:16px;padding:14px;border:1px solid #536d40;border-radius:12px;background:#10190f}
+.shop-entry{display:flex;align-items:center;gap:10px;padding:12px;margin:9px 0;background:#202c1c;border:1px solid #46583b;border-radius:10px;flex-wrap:wrap}
+.shop-entry div{flex:1;min-width:150px}.shop-entry small{display:block;color:#b6c2ad;margin-top:4px}
+.shop-marker{font-size:24px;text-shadow:0 0 12px currentColor}.weapon-marker{color:#ffcf36}.food-marker{color:#70e66a}
+.wallet{padding:10px;background:#0b130a;border-radius:8px;margin-top:12px;color:#d8e7d0}.wallet strong{color:#baff77;font-size:19px}
+.store-screen{margin-top:15px;padding:15px;border:1px solid #526745;border-radius:13px;background:#151e12}
+.catalog-reference{width:100%;max-height:230px;object-fit:contain;background:#0a0d09;border-radius:8px;margin:8px 0}
+.store-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin:14px 0}
+.store-item{position:relative;text-align:left;background:#222d1e;color:#f4f7f0;border:1px solid #526148;border-radius:10px;padding:12px;min-height:105px;transition:box-shadow .15s,border-color .15s,transform .15s}
+.store-item.selected{border:2px solid #fff36b;box-shadow:0 0 8px #fff36b,0 0 22px #d8ff3c;transform:translateY(-2px);background:#39472a}
+.store-item b{display:block;margin-bottom:9px}.store-item .price{color:#c9ff83;font-weight:bold;font-size:17px}
+.purchase-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px;background:#0c140b;border:1px solid #46583b;border-radius:10px}
+.purchase-bar span{flex:1;min-width:160px}.purchase-bar button:disabled{opacity:.4}
+
+</style>
+</head>
+<body>
+<main>
+  <header class="brand"><small>PROJETO COMUNITÁRIO</small><h1>GTA SAN ANDREAS ONLINE</h1><p>Sistema de salas e chat para amigos</p></header>
+  <section id="lobby" class="card">
+    <h2>Entrar no multiplayer</h2>
+    <div class="actions"><button id="openMap" class="secondary">Abrir mapa da cidade</button></div>
+    <label for="name">Seu nome</label><input id="name" maxlength="18" placeholder="Ex.: Biel">
+    <div class="actions"><button id="create">Criar sala</button></div>
+    <label for="roomCode">Código da sala</label><input id="roomCode" maxlength="6" placeholder="Ex.: A1B2C3" autocapitalize="characters">
+    <div class="actions"><button id="join" class="secondary">Entrar na sala</button></div>
+    <div id="status" class="status">Conectando ao servidor...</div>
+    <p class="note">Cada sala aceita até 8 pessoas nesta versão inicial.</p>
+  </section>
+
+  <section id="room" class="card hidden">
+    <div class="roomhead"><div><div class="note">CÓDIGO DA SALA</div><div id="shownCode" class="code">------</div></div><button id="copy" class="secondary">Copiar código</button></div>
+    
+    <section class="mission-panel">
+      <div class="mission-top"><div><span class="mission-kicker">MISSÃO INICIAL</span><h2>Primeiro passo: sua casa</h2></div><span id="missionState" class="mission-state">EM ANDAMENTO</span></div>
+      <p id="missionText">Pegue o carro que está esperando por você. Um marcador aparecerá no mapa indicando o caminho até sua casa.</p>
+      <div class="mission-actions">
+        <button id="getCar">🚗 Pegar carro</button>
+        <button id="missionMap" class="secondary">📍 Ver destino no mapa</button>
+      </div>
+      <div id="houseStep" class="house-step hidden">
+        <span class="red-dot"></span>
+        <div><b>Casa do personagem</b><small>Chegue ao local e entre pela marca vermelha.</small></div>
+        <button id="arriveHouse" class="secondary">Cheguei à casa</button>
+      </div>
+      <div id="enterHouseStep" class="house-step hidden">
+        <span class="red-dot pulse"></span>
+        <div><b>Entrada da casa</b><small>Entre para concluir a missão.</small></div>
+        <button id="enterHouse">🔴 Entrar na casa</button>
+      </div>
+      <div id="missionDone" class="mission-done hidden">✓ MISSÃO CONCLUÍDA! Você chegou à sua casa.</div>
+      <div id="insideHouseStep" class="house-step hidden">
+        <span class="blue-dot pulse-blue"></span>
+        <div><b>Ponto de salvamento</b><small>Vá até a bolinha azul no fundo da casa.</small></div>
+        <button id="reachSave">🔵 Cheguei à bolinha azul</button>
+      </div>
+      <div id="saveStep" class="save-panel hidden">
+        <h3>💾 Salvar jogo</h3><p>Deseja salvar seu progresso neste ponto?</p>
+        <button id="saveGame">Salvar jogo</button>
+      </div>
+      <div id="freeRoam" class="free-roam hidden">
+        <b>✓ JOGO SALVO — MODO LIVRE DESBLOQUEADO!</b>
+        <p>Agora você pode explorar a cidade no protótipo.</p>
+        <div class="weapon-hud">
+          <img src="/assets/pistola-referencia.webp" alt="Ícone da pistola de referência">
+          <div><b>Pistola</b><small>Munição no pente: <strong>20 / 20</strong></small></div>
+        </div>
+      </div>
+      <section id="freeShops" class="shop-hub hidden">
+        <h2>🏪 Lojas da cidade</h2>
+        <p class="note">Aproxime-se do marcador da loja e pressione X para abrir. Neste protótipo, use os botões abaixo para simular a interação.</p>
+        <div class="shop-entry">
+          <span class="shop-marker weapon-marker">●</span>
+          <div><b>Loja de armas</b><small>Marcador amarelo — pressione X para entrar</small></div>
+          <button id="openWeaponShop">X Entrar</button>
+        </div>
+        <div class="shop-entry">
+          <span class="shop-marker food-marker">●</span>
+          <div><b>Loja de comida</b><small>Marcador verde — pressione X para entrar</small></div>
+          <button id="openFoodShop">X Entrar</button>
+        </div>
+        <div class="wallet">Dinheiro do personagem: <strong id="cash">$5.000</strong></div>
+      </section>
+
+      <section id="weaponShop" class="store-screen hidden">
+        <div class="roomhead"><div><span class="mission-kicker">AMMU-NATION • LOJA DE ARMAS</span><h2>Escolha seu equipamento</h2></div><button class="secondary" id="closeWeaponShop">Voltar</button></div>
+        <img class="catalog-reference" src="/assets/catalogo-armas-referencia.jpg" alt="Referência visual do catálogo de equipamentos do jogo">
+        <p class="note">Selecione um item para destacar e ver o preço. Os valores abaixo são preços fictícios de jogo para este protótipo.</p>
+        <div id="weaponGrid" class="store-grid"></div>
+        <div class="purchase-bar"><span id="weaponInfo">Selecione um item.</span><button id="buyWeapon" disabled>✕ Comprar</button></div>
+        <div id="weaponNotice" class="status" aria-live="polite">Escolha um item da loja.</div>
+      </section>
+
+      <section id="foodShop" class="store-screen hidden">
+        <div class="roomhead"><div><span class="mission-kicker">LOJA DE COMIDA</span><h2>Comidas e bebidas</h2></div><button class="secondary" id="closeFoodShop">Voltar</button></div>
+        <p class="note">Selecione um produto para destacar e ver o preço. Comprar atualiza o dinheiro e a energia demonstrativa do personagem.</p>
+        <div id="foodGrid" class="store-grid"></div>
+        <div class="purchase-bar"><span id="foodInfo">Selecione um produto.</span><button id="buyFood" disabled>✕ Comprar</button></div>
+        <div id="foodNotice" class="status" aria-live="polite">Escolha um produto.</div>
+      </section>
+    </section>
+
+    <h2 style="margin-top:20px">Jogadores conectados <span id="count" class="note"></span></h2>
+    <div id="players" class="players"></div>
+    <h2 style="margin-top:22px">Chat entre amigos</h2>
+    <div id="chatlog" class="chatlog" aria-live="polite"></div>
+    <form id="chatform" class="chatform"><input id="message" maxlength="300" placeholder="Escreva uma mensagem..." autocomplete="off"><button>Enviar</button></form>
+    <div class="actions"><button id="leave" class="secondary">Sair da sala</button></div>
+  </section>
+
+  <section id="mapScreen" class="card hidden">
+    <div class="roomhead"><div><h2>Mapa da cidade</h2><div class="note">Toque no mapa para marcar o destino desejado</div></div><button id="closeMap" class="secondary">Voltar</button></div>
+    <div class="map-wrap">
+      <img id="cityMap" src="/assets/mapa-geral.webp" alt="Mapa geral da cidade enviado como referência">
+      <button id="mapPin" class="map-pin" aria-label="Destino marcado">📍</button>
+      <span id="mapHouseMarker" class="map-house-marker"></span><span id="mapDestLabel" class="map-dest-label">SUA CASA</span>
+    </div>
+    <div class="status" id="destination">Nenhum destino marcado. Toque em um ponto do mapa.</div>
+    <h2 style="margin-top:20px">Locais da cidade</h2>
+    <div class="places">
+      <button class="place" data-place="Cidade do interior"><img src="/assets/cidade-interior.jpg" alt=""><span>Cidade do interior</span></button>
+      <button class="place" data-place="Bairro das casas"><img src="/assets/bairro-casas.jpg" alt=""><span>Bairro das casas</span></button>
+      <button class="place" data-place="A Rua Mais Milionária"><img src="/assets/rua-mais-milionaria.png" alt=""><span>A Rua Mais Milionária</span></button>
+    </div>
+    <p class="note">As imagens mostram os ambientes de referência enviados. O marcador funciona neste protótipo de mapa; ainda não define coordenadas ou destinos dentro do GTA.</p>
+  </section>
+
+  <footer>Protótipo de salas — ainda não modifica nem conecta jogadores dentro do GTA.</footer>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+const $ = id => document.getElementById(id);
+
+$("openMap").onclick=()=>{$("lobby").classList.add("hidden");$("mapScreen").classList.remove("hidden")};
+$("closeMap").onclick=()=>{$("mapScreen").classList.add("hidden");if(joined){$("room").classList.remove("hidden")}else{$("lobby").classList.remove("hidden")}};
+$("cityMap").addEventListener("click",e=>{
+  const r=e.currentTarget.getBoundingClientRect();
+  const x=((e.clientX-r.left)/r.width)*100, y=((e.clientY-r.top)/r.height)*100;
+  $("mapPin").style.left=x+"%";$("mapPin").style.top=y+"%";$("mapPin").style.display="block";
+  $("destination").textContent="Destino marcado no mapa. Este ponto é apenas visual neste protótipo.";
+});
+document.querySelectorAll(".place").forEach(btn=>btn.addEventListener("click",()=>{
+  $("destination").textContent="Local selecionado: "+btn.dataset.place;
+}));
+
+let joined = false;
+let missionStage = "car";
+let gameCash = 5000;
+let selectedWeapon = null;
+let selectedFood = null;
+const weapons = [
+  {name:"Pistola",price:300,ammo:"20 no pente"},
+  {name:"Pistola com silenciador",price:600,ammo:"20 no pente"},
+  {name:"Desert Eagle",price:1200,ammo:"7 no pente"},
+  {name:"Micro SMG",price:1800,ammo:"50 no pente"},
+  {name:"Tec-9",price:1600,ammo:"50 no pente"},
+  {name:"SMG",price:2400,ammo:"30 no pente"},
+  {name:"Shotgun",price:2200,ammo:"8 no pente"},
+  {name:"Rifle",price:3500,ammo:"30 no pente"},
+  {name:"AK-47",price:4200,ammo:"30 no pente"},
+  {name:"M4",price:4800,ammo:"50 no pente"},
+  {name:"Rifle de precisão",price:5200,ammo:"10 no pente"},
+  {name:"Lança-foguetes (item de jogo)",price:8000,ammo:"1 por disparo"}
+];
+const foods = [
+  {name:"Hambúrguer",price:25,energy:25},
+  {name:"Pizza",price:35,energy:35},
+  {name:"Sanduíche",price:18,energy:18},
+  {name:"Refrigerante",price:10,energy:10},
+  {name:"Água",price:8,energy:8},
+  {name:"Combo completo",price:55,energy:60}
+];
+function money(n){return "$"+n.toLocaleString("pt-BR")}
+function updateCash(){$("cash").textContent=money(gameCash)}
+function renderStore(items,gridId,type){
+  const grid=$(gridId);grid.innerHTML="";
+  items.forEach((item,i)=>{
+    const btn=document.createElement("button");btn.className="store-item";
+    const name=document.createElement("b");name.textContent=item.name;
+    const price=document.createElement("span");price.className="price";price.textContent=money(item.price);
+    btn.append(name,price);
+    btn.onclick=()=>{
+      grid.querySelectorAll(".store-item").forEach(x=>x.classList.remove("selected"));
+      btn.classList.add("selected");
+      if(type==="weapon"){selectedWeapon=i;$("weaponInfo").textContent=item.name+" • "+money(item.price)+" • "+item.ammo;$("buyWeapon").disabled=false}
+      else{selectedFood=i;$("foodInfo").textContent=item.name+" • "+money(item.price)+" • energia +"+item.energy;$("buyFood").disabled=false}
+    };
+    grid.appendChild(btn);
+  });
+}
+function showShop(id){
+  ["weaponShop","foodShop"].forEach(x=>$(x).classList.add("hidden"));
+  $("freeShops").classList.add("hidden");
+  $(id).classList.remove("hidden");
+}
+$("openWeaponShop").onclick=()=>{renderStore(weapons,"weaponGrid","weapon");selectedWeapon=null;$("weaponInfo").textContent="Selecione uma arma para ver o preço.";$("buyWeapon").disabled=true;$("weaponNotice").textContent="Aproxime-se do item e pressione X para comprar.";showShop("weaponShop")};
+$("openFoodShop").onclick=()=>{renderStore(foods,"foodGrid","food");selectedFood=null;$("foodInfo").textContent="Selecione uma comida para ver o preço.";$("buyFood").disabled=true;$("foodNotice").textContent="Selecione um produto e pressione X para comprar.";showShop("foodShop")};
+$("closeWeaponShop").onclick=()=>{ $("weaponShop").classList.add("hidden");$("freeShops").classList.remove("hidden") };
+$("closeFoodShop").onclick=()=>{ $("foodShop").classList.add("hidden");$("freeShops").classList.remove("hidden") };
+$("buyWeapon").onclick=()=>{
+  if(selectedWeapon===null)return;
+  const item=weapons[selectedWeapon];
+  if(gameCash<item.price){$("weaponNotice").textContent="Dinheiro insuficiente para comprar "+item.name+".";return}
+  gameCash-=item.price;updateCash();
+  $("weaponNotice").textContent="Comprado: "+item.name+". Adicionado ao inventário demonstrativo.";
+  systemMessage("Compra realizada na loja: "+item.name+" ("+money(item.price)+").");
+};
+$("buyFood").onclick=()=>{
+  if(selectedFood===null)return;
+  const item=foods[selectedFood];
+  if(gameCash<item.price){$("foodNotice").textContent="Dinheiro insuficiente para comprar "+item.name+".";return}
+  gameCash-=item.price;updateCash();
+  $("foodNotice").textContent="Comprado: "+item.name+". Energia demonstrativa +"+item.energy+".";
+  systemMessage("Compra realizada na loja de comida: "+item.name+" ("+money(item.price)+").");
+};
+function status(text){$("status").textContent=text}
+function enter(room){
+  joined=true;$("lobby").classList.add("hidden");$("room").classList.remove("hidden");
+  $("shownCode").textContent=room.code;renderPlayers(room.players);
+  $("chatlog").innerHTML="";
+  room.messages.forEach(addMessage);
+  resetMission();
+}
+
+function resetMission(){
+  missionStage="car";
+  $("missionState").textContent="EM ANDAMENTO";
+  $("missionText").textContent="Pegue o carro que está esperando por você. Um marcador aparecerá no mapa indicando o caminho até sua casa.";
+  $("getCar").classList.remove("hidden");
+  $("houseStep").classList.add("hidden");
+  $("enterHouseStep").classList.add("hidden");
+  $("missionDone").classList.add("hidden");
+  $("insideHouseStep").classList.add("hidden");
+  $("saveStep").classList.add("hidden");
+  $("freeRoam").classList.add("hidden");
+  $("freeShops").classList.add("hidden");
+  $("weaponShop").classList.add("hidden");
+  $("foodShop").classList.add("hidden");
+  gameCash=5000;updateCash();
+  $("mapHouseMarker").style.display="none";
+  $("mapDestLabel").style.display="none";
+}
+$("getCar").onclick=()=>{
+  missionStage="drive";
+  $("missionText").textContent="Você pegou o carro! O marcador vermelho no mapa mostra onde fica sua casa. Siga até o destino.";
+  $("getCar").classList.add("hidden");
+  $("houseStep").classList.remove("hidden");
+  $("mapHouseMarker").style.display="block";
+  $("mapDestLabel").style.display="block";
+  systemMessage("Missão iniciada: pegue o carro e vá até sua casa.");
+};
+$("missionMap").onclick=()=>{
+  $("room").classList.add("hidden");$("mapScreen").classList.remove("hidden");
+  $("mapHouseMarker").style.display=missionStage==="car"?"none":"block";
+  $("mapDestLabel").style.display=missionStage==="car"?"none":"block";
+  $("destination").textContent=missionStage==="car"?"Pegue o carro primeiro para revelar o destino.":"Destino da missão: sua casa — marcador vermelho.";
+};
+$("arriveHouse").onclick=()=>{
+  if(missionStage!=="drive")return;
+  missionStage="door";
+  $("houseStep").classList.add("hidden");
+  $("enterHouseStep").classList.remove("hidden");
+  $("missionText").textContent="Você chegou à sua casa! Agora entre pela bolinha vermelha para concluir.";
+};
+$("enterHouse").onclick=()=>{
+  if(missionStage!=="door")return;
+  missionStage="inside";
+  $("enterHouseStep").classList.add("hidden");
+  $("missionDone").classList.remove("hidden");
+  $("missionState").textContent="MISSÃO CONCLUÍDA";
+  $("missionText").textContent="Missão concluída! Você entrou na sua casa. Agora vá até a bolinha azul no fundo para salvar.";
+  $("insideHouseStep").classList.remove("hidden");
+  $("mapHouseMarker").style.display="none";
+  $("mapDestLabel").style.display="none";
+  systemMessage("MISSÃO CONCLUÍDA! Você chegou à sua casa.");
+};
+$("reachSave").onclick=()=>{
+  if(missionStage!=="inside")return;
+  missionStage="save";
+  $("insideHouseStep").classList.add("hidden");
+  $("saveStep").classList.remove("hidden");
+  $("missionText").textContent="Você chegou ao ponto de salvamento. Salve seu jogo para liberar o modo livre.";
+};
+$("saveGame").onclick=()=>{
+  if(missionStage!=="save")return;
+  missionStage="free";
+  $("saveStep").classList.add("hidden");
+  $("freeRoam").classList.remove("hidden");
+  $("freeShops").classList.remove("hidden");
+  updateCash();
+  $("missionState").textContent="MODO LIVRE";
+  $("missionText").textContent="Progresso salvo no protótipo. Modo livre desbloqueado!";
+  systemMessage("JOGO SALVO! Modo livre desbloqueado. Pistola equipada com 20/20 no HUD.");
+};
+
+function renderPlayers(players){
+  $("count").textContent=`(${players.length}/8)`;
+  $("players").innerHTML="";
+  players.forEach(p=>{const el=document.createElement("span");el.className="player";el.textContent="● "+p.name;$("players").appendChild(el)});
+}
+function addMessage(m){
+  const el=document.createElement("p");el.className="msg";
+  const b=document.createElement("b");b.textContent=m.name;
+  const t=document.createElement("time");t.textContent=m.time||"";
+  const span=document.createElement("span");span.textContent=": "+m.text;
+  el.append(b,t,span);$("chatlog").appendChild(el);$("chatlog").scrollTop=$("chatlog").scrollHeight;
+}
+function systemMessage(text){
+  const el=document.createElement("p");el.className="msg system";el.textContent=text;
+  $("chatlog").appendChild(el);$("chatlog").scrollTop=$("chatlog").scrollHeight;
+}
+$("create").onclick=()=>{
+  const name=$("name").value.trim();
+  socket.emit("create-room",{name},res=>res.ok?enter(res.room):status(res.error));
+};
+$("join").onclick=()=>{
+  const name=$("name").value.trim(),code=$("roomCode").value.trim();
+  socket.emit("join-room",{name,code},res=>res.ok?enter(res.room):status(res.error));
+};
+$("copy").onclick=async()=>{
+  try{await navigator.clipboard.writeText($("shownCode").textContent);$("copy").textContent="Copiado!";setTimeout(()=>$("copy").textContent="Copiar código",1400)}
+  catch{$("copy").textContent="Código: "+$("shownCode").textContent}
+};
+$("chatform").onsubmit=e=>{
+  e.preventDefault();const text=$("message").value;
+  socket.emit("send-message",{text},res=>{if(!res.ok)systemMessage(res.error)});
+  $("message").value="";
+};
+$("leave").onclick=()=>{socket.emit("leave-room");joined=false;$("room").classList.add("hidden");$("lobby").classList.remove("hidden");status("Você saiu da sala.")};
+socket.on("connect",()=>status("Conectado ao servidor. Crie uma sala ou entre com um código."));
+socket.on("disconnect",()=>{if(joined)systemMessage("Conexão perdida. Recarregue a página para reconectar.");else status("Desconectado. Tentando reconectar...")});
+socket.on("room-update",room=>{if(joined)renderPlayers(room.players)});
+socket.on("chat-message",addMessage);
+socket.on("system-message",systemMessage);
+</script>
+</body>
+</html>
